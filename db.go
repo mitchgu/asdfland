@@ -4,8 +4,22 @@ import (
 	"github.com/go-redis/redis"
 )
 
-var db = redis.NewClient(&redis.Options{
-	Addr: 		c.GetString("redis_addr"),
-	Password:	c.GetString("redis_pass"),
-	DB:			c.GetInt("redis_db"),
-})
+type DB interface {
+	DBType() string
+}
+
+type RedisDB struct {
+	Client *redis.Client
+}
+
+func (rdb *RedisDB) Init(addr, pass string, dbnum int) {
+	rdb.Client = redis.NewClient(&redis.Options{
+		Addr: 		addr,
+		Password:	pass,
+		DB:			dbnum,
+	})
+}
+
+func (rdb *RedisDB) DBType() string {
+	return "redis"
+}

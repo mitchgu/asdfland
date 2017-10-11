@@ -11,29 +11,32 @@ type Route struct {
 
 type Routes []Route
 
-var routes = Routes{
-	Route{
-		"Home",
-		"GET",
-		"/",
-		HomeHandler,
-	},
-	Route{
-		"Admin",
-		"GET",
-		"/a/",
-		AdminHandler,
-	},
-	Route{
-		"DestCreate",
-		"Post",
-		"/a/dest",
-		DestCreateHandler,
-	},
-	Route{
-		"LinkGet",
-		"GET",
-		"/{key}",
-		KeyHandler,
-	},
+func (a *App) GetRoutes() *Routes {
+	var routes = Routes{
+		Route{
+			"Home",
+			"GET",
+			"/",
+			a.HomeHandler,
+		},
+		Route{
+			"Admin",
+			"GET",
+			"/a/",
+			a.AdminHandler,
+		},
+		Route{
+			"DestCreate",
+			"Post",
+			"/a/dest",
+			a.DestCreateHandler,
+		},
+		Route{
+			"LinkGet",
+			"GET",
+			"/{key}",
+			a.KeyHandler,
+		},
+	}
+	return &routes
 }

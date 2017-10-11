@@ -1,5 +1,6 @@
 server_addr: localhost:9090
 
+db_kind: redis
 redis_addr: localhost:6379
-redis_db: 7
+redis_dbnum: 7
 redis_pass: 
