@@ -14,7 +14,8 @@ func main() {
         a.InitRedis(
             c.GetString("redis_addr"),
             c.GetString("redis_pass"),
-            c.GetInt("redis_dbnum"))
+            c.GetInt("redis_dbnum"),
+            c.GetString("frontend_dir"))
     } else {
         log.Fatalf("Database type not supported: %s", c.GetString("db_kind"))
     }

@@ -13,13 +13,16 @@ type App struct {
 	DB DB
 }
 
-func (a *App) InitRedis(redis_addr, redis_pass string, redis_dbnum int) {
+func (a *App) InitRedis(redisAddr, redisPass string, redisDbnum int, frontendDir string) {
 	rdb := RedisDB{}
-	rdb.Init(redis_addr, redis_pass, redis_dbnum)
+	rdb.Init(redisAddr, redisPass, redisDbnum)
 	a.DB = &rdb
 
-	routes := a.GetRoutes()
+	routes := a.GetRoutes(frontendDir)
 	a.Router = mux.NewRouter().StrictSlash(true)
+	frontendServer := Logger(http.FileServer(http.Dir(frontendDir)), "frontend")
+	a.Router.Path("/").Handler(frontendServer)
+	a.Router.PathPrefix("/static").Handler(frontendServer)
 	for _, route := range *routes {
 		var handler http.Handler
 

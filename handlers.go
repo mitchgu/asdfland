@@ -18,16 +18,6 @@ func (a *App) KeyHandler(w http.ResponseWriter, r *http.Request) {
 	// }
 }
 
-func (a *App) HomeHandler(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprint(w, a.DB.DBType())
-}
-
-func (a *App) AdminHandler(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprint(w, "Admin page")
-}
-
 func (a *App) DestCreateHandler(w http.ResponseWriter, r *http.Request) {
     // var d Dest
     // err := json.NewDecoder(r.Body).Decode(&d)

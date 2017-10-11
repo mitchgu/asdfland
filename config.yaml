@@ -4,3 +4,5 @@ db_kind: redis
 redis_addr: localhost:6379
 redis_dbnum: 7
 redis_pass: 
+
+frontend_dir: /Users/mitchgu/Code/asdfland_client/dist

@@ -21,6 +21,7 @@ func LoadConfig() *viper.Viper {
 	v.SetDefault("redis_addr", "localhost:6379")
 	v.SetDefault("redis_db", 0)
 	v.SetDefault("redis_pass", "")
+	v.SetDefault("frontend_dir", "frontend")
 
 	return v
 }

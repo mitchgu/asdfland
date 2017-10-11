@@ -11,24 +11,12 @@ type Route struct {
 
 type Routes []Route
 
-func (a *App) GetRoutes() *Routes {
+func (a *App) GetRoutes(frontendDir string) *Routes {
 	var routes = Routes{
 		Route{
-			"Home",
-			"GET",
-			"/",
-			a.HomeHandler,
-		},
-		Route{
-			"Admin",
-			"GET",
-			"/a/",
-			a.AdminHandler,
-		},
-		Route{
 			"DestCreate",
-			"Post",
-			"/a/dest",
+			"POST",
+			"/api/dest",
 			a.DestCreateHandler,
 		},
 		Route{
