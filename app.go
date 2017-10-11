@@ -10,7 +10,7 @@ import (
 
 type App struct {
 	Router *mux.Router
-	DB DB
+	DB     DB
 }
 
 func (a *App) InitRedis(redisAddr, redisPass string, redisDbnum int, frontendDir string) {
@@ -39,13 +39,13 @@ func (a *App) InitRedis(redisAddr, redisPass string, redisDbnum int, frontendDir
 }
 
 func (a *App) Run(addr string) {
-    srv := &http.Server{
-        Handler:      a.Router,
-        Addr:         addr,
-        // Good practice: enforce timeouts for servers you create!
-        WriteTimeout: 15 * time.Second,
-        ReadTimeout:  15 * time.Second,
-    }
-    log.Println("Starting server")
-    log.Fatal(srv.ListenAndServe())
+	srv := &http.Server{
+		Handler: a.Router,
+		Addr:    addr,
+		// Good practice: enforce timeouts for servers you create!
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+	log.Println("Starting server")
+	log.Fatal(srv.ListenAndServe())
 }

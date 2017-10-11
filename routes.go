@@ -14,6 +14,12 @@ type Routes []Route
 func (a *App) GetRoutes(frontendDir string) *Routes {
 	var routes = Routes{
 		Route{
+			"SlugReserve",
+			"POST",
+			"/api/slug/reserve",
+			a.SlugReserveHandler,
+		},
+		Route{
 			"DestCreate",
 			"POST",
 			"/api/dest",
