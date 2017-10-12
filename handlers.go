@@ -3,17 +3,13 @@ package main
 import (
 	// "log"
 	// "fmt"
+    "strings"
+    "io/ioutil"
 	"encoding/json"
 
 	"net/http"
+    "github.com/gorilla/mux"
 )
-
-type SlugReserveReq struct {
-	Type       string
-	Length     int
-	Dictionary string
-	CustomSlug string
-}
 
 func (a *App) SlugReserveHandler(w http.ResponseWriter, r *http.Request) {
 	var srr SlugReserveReq
@@ -58,31 +54,46 @@ func (a *App) SlugReserveHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	respondWithJSON(w, http.StatusBadRequest, map[string]string{"success": "false"})
+    respondBadRequest(w, "could not reserve a slug witn provided params")
+}
+
+func (a *App) SlugDestCreateHandler(w http.ResponseWriter, r *http.Request) {
+    var sdcr SlugDestCreateReq
+    var dest Dest
+    bodyBuf, _ := ioutil.ReadAll(r.Body)
+    err := json.Unmarshal(bodyBuf, &sdcr)
+    errDest := json.Unmarshal(bodyBuf, &dest)
+    if err != nil || errDest != nil {
+        respondBadRequest(w, "malformed JSON in request2" + err.Error())
+        return
+    }
+    fingerprint := GetRequestFingerprint(r)
+    if (!a.DB.SlugReserved(fingerprint, sdcr.Slug)) {
+        respondBadRequest(w, "slug hasn't been reserved yet" + sdcr.Slug)
+        return
+    }
+    destUUID, success := a.DB.DestCreate(&dest)
+    if (!success) {
+        respondServerError(w, "problem creating destination")
+        return
+    }
+    success = a.DB.SlugCreate(sdcr.Slug, destUUID, sdcr.Expire, fingerprint)
+    if (!success) {
+        respondServerError(w, "problem creating slug")
+        return
+    }
+    respondOK(w)
 }
 
 func (a *App) KeyHandler(w http.ResponseWriter, r *http.Request) {
-	// vars := mux.Vars(r)
-	// dest, err := db.Get(vars["key"]).Result()
-	// if err != nil {
-	//        http.Error(w, "Page not found", 404)
-	// } else {
-	// 	http.Redirect(w, r, dest, 302)
-	// }
-}
-
-func (a *App) DestCreateHandler(w http.ResponseWriter, r *http.Request) {
-	// var d Dest
-	// err := json.NewDecoder(r.Body).Decode(&d)
-	// if err != nil {
-	//     http.Error(w, "Error decoding JSON", 400)
-	//     return
-	// }
-	// d.CreationIP = r.RemoteAddr
-	// success := DestCreate(d)
-	// if !success {
-	// 	http.Error(w, "Error creating destination", 500)
-	// 	return
-	// }
-	// w.Write([]byte("OK"))
+	vars := mux.Vars(r)
+	dest, err := a.DB.SlugFollow(vars["slug"])
+	if err != nil {
+	    http.Error(w, "Page not found", 404)
+	} else {
+        if strings.Index(dest, "http://") != 0 || strings.Index(dest, "https://") != 0 {
+            dest = "http://" + dest
+        }
+		http.Redirect(w, r, dest, 302)
+	}
 }

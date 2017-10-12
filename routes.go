@@ -20,15 +20,15 @@ func (a *App) GetRoutes(frontendDir string) *Routes {
 			a.SlugReserveHandler,
 		},
 		Route{
-			"DestCreate",
+			"SlugDestCreate",
 			"POST",
-			"/api/dest",
-			a.DestCreateHandler,
+			"/api/slugdest",
+			a.SlugDestCreateHandler,
 		},
 		Route{
 			"LinkGet",
 			"GET",
-			"/{key}",
+			"/{slug}",
 			a.KeyHandler,
 		},
 	}

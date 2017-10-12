@@ -67,3 +67,16 @@ func respondBadRequest(w http.ResponseWriter, reason string) {
 		"msg":     reason,
 	})
 }
+
+func respondServerError(w http.ResponseWriter, reason string) {
+	respondWithJSON(w, http.StatusInternalServerError, map[string]string{
+		"success": "false",
+		"msg":     reason,
+	})
+}
+
+func respondOK(w http.ResponseWriter) {
+	respondWithJSON(w, http.StatusOK, map[string]string{
+		"success": "true",
+	})
+}
