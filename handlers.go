@@ -1,11 +1,12 @@
 package main
 
 import (
-    "strings"
     "io/ioutil"
 	"encoding/json"
+	"log"
 
 	"net/http"
+	"net/url"
     "github.com/gorilla/mux"
 )
 
@@ -69,6 +70,17 @@ func (a *App) SlugDestCreateHandler(w http.ResponseWriter, r *http.Request) {
         respondBadRequest(w, "malformed JSON in request2" + err.Error())
         return
     }
+    log.Print(dest.Dest)
+    destUrl, err := url.Parse(dest.Dest)
+    if err != nil {
+    	respondBadRequest(w, "Destination URL could not be parsed")
+    	return
+    }
+    if !destUrl.IsAbs() {
+    	destUrl.Scheme = "http"
+    }
+    dest.Dest = destUrl.String()
+    log.Print(dest.Dest)
     fingerprint := GetRequestFingerprint(r)
     if (!a.DB.SlugReserved(fingerprint, sdcr.Slug)) {
         respondBadRequest(w, "slug hasn't been reserved yet" + sdcr.Slug)
@@ -93,9 +105,6 @@ func (a *App) KeyHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 	    http.Error(w, "Page not found", 404)
 	} else {
-        if strings.Index(dest, "http://") != 0 || strings.Index(dest, "https://") != 0 {
-            dest = "http://" + dest
-        }
 		http.Redirect(w, r, dest, 302)
 	}
 }
