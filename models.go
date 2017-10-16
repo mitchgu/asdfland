@@ -14,7 +14,7 @@ type Dest struct {
 type SlugReserveReq struct {
     Type       string
     Length     int
-    Dictionary string
+    Wordlist   string
     CustomSlug string
 }
 

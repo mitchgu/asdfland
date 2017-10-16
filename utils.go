@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"log"
+	"fmt"
 )
 
 func GetRequestFingerprint(r *http.Request) string {
@@ -39,18 +41,38 @@ func readLines(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-var googleWords, _ = readLines("wordlists/google.txt")
-
-func GetDictionaryWord() string {
-	return googleWords[rand.Intn(len(googleWords))]
+func initWordlists() (map[string][]string) {
+	wls := make(map[string][]string)
+	for name, file := range c.GetStringMapString("wordlists") {
+		if wordlist, err := readLines(file); err != nil {
+			log.Printf("Word list %s at %s could not be read", name, file)
+		} else {
+			wls[name] = wordlist
+		}
+	}
+	return wls
 }
 
-func GetReadableString(len int) string {
-	slug := ""
-	for i := 0; i < len; i++ {
-		slug += GetDictionaryWord()
+var wordlists = initWordlists()
+
+func GetWordlistWord(wl string) (string, error) {
+	if wordlist, ok := wordlists[wl]; ok {
+		return wordlist[rand.Intn(len(wordlist))], nil
+	} else {
+		return "", fmt.Errorf("GetWordlistWord: word list %s not found", wl)
 	}
-	return slug
+}
+
+func GetReadableString(wl string, len int) (string, error) {
+	var words []string
+	for i := 0; i < len; i++ {
+		if word, err := GetWordlistWord(wl); err != nil {
+			return "", err
+		} else {
+			words = append(words, word)
+		}
+	}
+	return strings.Join(words, c.GetString("word_delimiter")), nil
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

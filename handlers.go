@@ -1,8 +1,6 @@
 package main
 
 import (
-	// "log"
-	// "fmt"
     "strings"
     "io/ioutil"
 	"encoding/json"
@@ -19,7 +17,7 @@ func (a *App) SlugReserveHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fingerprint := GetRequestFingerprint(r)
-	var slugGenerator func() string
+	var slugGenerator func() (string, error)
 	var attempts int
 	switch srr.Type {
 	case "random":
@@ -27,31 +25,35 @@ func (a *App) SlugReserveHandler(w http.ResponseWriter, r *http.Request) {
 			respondBadRequest(w, "random slug length must be >=6")
 			return
 		}
-		slugGenerator = func() string { return GetRandString(srr.Length) }
+		slugGenerator = func() (string, error) { return GetRandString(srr.Length), nil }
 		attempts = 3
 	case "readable":
 		if srr.Length < 1 || srr.Length > 6 {
 			respondBadRequest(w, "readable slug length must be 1 to 6 words")
 			return
 		}
-		slugGenerator = func() string { return GetReadableString(srr.Length) }
+		slugGenerator = func() (string, error) { return GetReadableString(srr.Wordlist, srr.Length); }
 		attempts = 5
 	case "custom":
 		if len(srr.CustomSlug) < 1 {
 			respondBadRequest(w, "provided custom slug is empty")
 			return
 		}
-		slugGenerator = func() string { return srr.CustomSlug }
+		slugGenerator = func() (string, error) { return srr.CustomSlug, nil }
 		attempts = 1
 	default:
 		attempts = 0
 	}
 	for i := 0; i < attempts; i++ {
-		slug := slugGenerator()
-		success := a.DB.ReserveSlug(fingerprint, slug)
-		if success {
-			respondWithJSON(w, http.StatusOK, map[string]string{"success": "true", "slug": slug})
+		if slug, err := slugGenerator(); err != nil {
+			respondBadRequest(w, err.Error())
 			return
+		} else {
+			success := a.DB.ReserveSlug(fingerprint, slug)
+			if success {
+				respondWithJSON(w, http.StatusOK, map[string]string{"success": "true", "slug": slug})
+				return
+			}
 		}
 	}
     respondBadRequest(w, "could not reserve a slug witn provided params")
