@@ -27,18 +27,6 @@ type SlugDestCreateReq struct {
     EnableAnalytics bool
 }
 
-func DestCreate(d Dest) bool {
-	// dest_hash := map[string]interface{}{
-	// 	"url": d.Url,
-	// 	"title": d.Title,
-	// 	"creation_ip": d.CreationIP,
-	// 	"created_at": time.Now().UTC().Format(time.RFC3339),
-	// }
-	// dest_uuid := GetUUID(24)
-	// db.HMSet("dest:" + dest_uuid, dest_hash)
-	return true
-}
-
 func (dest *Dest) ToMap() *map[string]interface{} {
     destMap := map[string]interface{}{
         "Dest": dest.Dest,
