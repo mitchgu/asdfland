@@ -26,6 +26,12 @@ func (a *App) GetRoutes(frontendDir string) *Routes {
 			a.SlugDestCreateHandler,
 		},
 		Route{
+			"LinkPreviewGet",
+			"GET",
+			"/p/{slug}",
+			a.KeyPreviewHandler,
+		},
+		Route{
 			"LinkGet",
 			"GET",
 			"/{slug}",

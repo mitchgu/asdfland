@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 
+	"fmt"
 	"net/http"
 	"net/url"
     "github.com/gorilla/mux"
@@ -106,5 +107,15 @@ func (a *App) KeyHandler(w http.ResponseWriter, r *http.Request) {
 	    http.Error(w, "Page not found", 404)
 	} else {
 		http.Redirect(w, r, dest, 302)
+	}
+}
+
+func (a *App) KeyPreviewHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	dest, err := a.DB.SlugFollow(vars["slug"])
+	if err != nil {
+	    http.Error(w, "Page not found", 404)
+	} else {
+	    fmt.Fprintf(w, "Destination is %s", dest)
 	}
 }
