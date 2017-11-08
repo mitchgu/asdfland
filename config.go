@@ -18,6 +18,7 @@ func LoadConfig() *viper.Viper {
 
 	v.SetDefault("server_addr", "localhost:9090")
 	v.SetDefault("db_kind", "redis")
+	v.SetDefault("bcrypt_cost", 8)
 	v.SetDefault("redis_addr", "localhost:6379")
 	v.SetDefault("redis_db", 0)
 	v.SetDefault("redis_pass", "")

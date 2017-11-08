@@ -8,6 +8,7 @@ type Dest struct {
 	Dest            string
 	Description     string
 	Password        string
+	Username        string
 	EnableAnalytics bool
 }
 
@@ -27,11 +28,22 @@ type SlugDestCreateReq struct {
 	EnableAnalytics bool
 }
 
+type UserCreateReq struct {
+	Username string
+	Password string
+}
+
+type UserLoginReq struct {
+	Username string
+	Password string
+}
+
 func (dest *Dest) ToMap() *map[string]interface{} {
 	destMap := map[string]interface{}{
 		"Dest":            dest.Dest,
 		"Description":     dest.Description,
 		"Password":        dest.Password,
+		"Username":        dest.Username,
 		"EnableAnalytics": dest.EnableAnalytics,
 	}
 	return &destMap

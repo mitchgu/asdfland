@@ -13,20 +13,27 @@ type App struct {
 	DB     DB
 }
 
-func (a *App) InitRedis(redisAddr, redisPass string, redisDbnum int, frontendDir string) {
+func (a *App) InitRedis(redisAddr, redisPass string, redisDbnum int) {
 	rdb := RedisDB{}
 	rdb.Init(redisAddr, redisPass, redisDbnum)
 	a.DB = &rdb
+}
 
-	routes := a.GetRoutes(frontendDir)
+func (a *App) InitRouter(frontendDir string) {
 	a.Router = mux.NewRouter().StrictSlash(true)
+
+	// Setup the static Vue.js frontend routes
 	frontendServer := Logger(http.FileServer(http.Dir(frontendDir)), "frontend")
 	a.Router.Path("/").Handler(frontendServer)
 	a.Router.PathPrefix("/static").Handler(frontendServer)
+
+	// Setup the API routes
+	routes := a.GetRoutes()
 	for _, route := range *routes {
 		var handler http.Handler
 
 		handler = route.HandlerFunc
+		handler = a.SessionMiddleware(handler, route.EnsureSession)
 		handler = Logger(handler, route.Name)
 
 		a.Router.
@@ -34,7 +41,6 @@ func (a *App) InitRedis(redisAddr, redisPass string, redisDbnum int, frontendDir
 			Path(route.Pattern).
 			Name(route.Name).
 			Handler(handler)
-
 	}
 }
 

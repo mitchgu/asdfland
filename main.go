@@ -14,10 +14,10 @@ func main() {
 		a.InitRedis(
 			c.GetString("redis_addr"),
 			c.GetString("redis_pass"),
-			c.GetInt("redis_dbnum"),
-			c.GetString("frontend_dir"))
+			c.GetInt("redis_dbnum"))
 	} else {
 		log.Fatalf("Database type not supported: %s", c.GetString("db_kind"))
 	}
+	a.InitRouter(c.GetString("frontend_dir"))
 	a.Run(c.GetString("server_addr"))
 }
