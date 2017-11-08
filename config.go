@@ -23,12 +23,12 @@ func LoadConfig() *viper.Viper {
 	v.SetDefault("redis_pass", "")
 	v.SetDefault("frontend_dir", "frontend")
 
-	v.SetDefault("wordlists", map[string]string {
-		"pgp": "wordlists/pgp.txt",
-		"eff_large": "wordlists/eff_large.txt",
+	v.SetDefault("wordlists", map[string]string{
+		"pgp":         "wordlists/pgp.txt",
+		"eff_large":   "wordlists/eff_large.txt",
 		"eff_short_1": "wordlists/eff_short_1.txt",
 		"eff_short_2": "wordlists/eff_short_2.txt",
-		})
+	})
 
 	v.SetDefault("word_delimiter", ".")
 

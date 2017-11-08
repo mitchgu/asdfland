@@ -91,17 +91,21 @@ func (rdb *RedisDB) SlugCreate(slug, destUUID string, expire int, fp string) boo
 	dKey := destKey(destUUID)
 	sKey := slugKey(slug)
 	rKey := reserveKey(slug)
-	rdb.Client.Set(sKey, dKey, time.Duration(expire) * time.Minute).Err()
+	rdb.Client.Set(sKey, dKey, time.Duration(expire)*time.Minute).Err()
 	rdb.Client.HDel(fpKey, "reserve").Err()
 	rdb.Client.Del(rKey)
-	return true 
+	return true
 }
 
 func (rdb *RedisDB) SlugFollow(slug string) (string, error) {
 	sKey := slugKey(slug)
 	dKey, errGet := rdb.Client.Get(sKey).Result()
-	if errGet != nil { return "", errGet }
+	if errGet != nil {
+		return "", errGet
+	}
 	url, errHGet := rdb.Client.HGet(dKey, "Dest").Result()
-	if errHGet != nil { return "", errHGet }
+	if errHGet != nil {
+		return "", errHGet
+	}
 	return url, errHGet
 }

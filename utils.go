@@ -5,12 +5,12 @@ import (
 	crand "crypto/rand"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"strings"
-	"log"
-	"fmt"
 )
 
 func GetRequestFingerprint(r *http.Request) string {
@@ -41,7 +41,7 @@ func readLines(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func initWordlists() (map[string][]string) {
+func initWordlists() map[string][]string {
 	wls := make(map[string][]string)
 	for name, file := range c.GetStringMapString("wordlists") {
 		if wordlist, err := readLines(file); err != nil {
