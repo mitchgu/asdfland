@@ -29,6 +29,13 @@ func (a *App) GetRoutes() *Routes {
 			a.SlugDestCreateHandler,
 		},
 		Route{
+			"DestIndex",
+			"GET",
+			"/api/dest",
+			true,
+			a.DestIndexHandler,
+		},
+		Route{
 			"UserCreate",
 			"POST",
 			"/api/user/create",
@@ -44,7 +51,7 @@ func (a *App) GetRoutes() *Routes {
 		},
 		Route{
 			"UserLogout",
-			"get",
+			"GET",
 			"/api/user/logout",
 			false,
 			a.UserLogoutHandler,

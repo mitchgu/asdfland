@@ -89,7 +89,7 @@ func (a *App) SlugDestCreateHandler(w http.ResponseWriter, r *http.Request) {
 		respondBadRequest(w, "Slug hasn't been reserved yet"+sdcr.Slug)
 		return
 	}
-	dest.Username = r.Context().Value("Username").(string)
+	dest.Owner = r.Context().Value("Username").(string)
 	destUUID, success := a.DB.DestCreate(&dest)
 	if !success {
 		respondServerError(w, "Problem creating destination")
@@ -194,4 +194,10 @@ func (a *App) SessionGetHandler(w http.ResponseWriter, r *http.Request) {
 		"Username":     ctx.Value("Username").(string),
 		"IsRegistered": strconv.FormatBool(ctx.Value("IsRegistered").(bool)),
 	})
+}
+
+func (a *App) DestIndexHandler(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	destIndex := a.DB.BuildDestIndex(ctx.Value("Username").(string))
+	respondWithJSON(w, http.StatusOK, destIndex)
 }

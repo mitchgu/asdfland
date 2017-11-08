@@ -19,6 +19,7 @@ type DB interface {
 	UserGetDigest(username string) (string, error)
 	SessionCreate(username, token string) string
 	SessionLookup(token string) (bool, string, bool)
+	BuildDestIndex(username string) []*DestListing
 }
 
 type RedisDB struct {
@@ -37,12 +38,14 @@ func (rdb *RedisDB) DBType() string {
 	return "redis"
 }
 
-func fingerprintKey(fp string) string { return "fp:" + fp }
-func reserveKey(slug string) string   { return "reserve:" + slug }
-func slugKey(slug string) string      { return "slug:" + slug }
-func destKey(destUUID string) string  { return "dest:" + destUUID }
-func userKey(username string) string  { return "user:" + username }
-func sessionKey(token string) string  { return "session:" + token }
+func fingerprintKey(fp string) string     { return "fp:" + fp }
+func reserveKey(slug string) string       { return "reserve:" + slug }
+func slugKey(slug string) string          { return "slug:" + slug }
+func destKey(destUUID string) string      { return "dest:" + destUUID }
+func userKey(username string) string      { return "user:" + username }
+func sessionKey(token string) string      { return "session:" + token }
+func userdestsKey(username string) string { return "userdests:" + username }
+func destslugsKey(dest string) string     { return "destslugs:" + dest }
 
 func (rdb *RedisDB) ReserveSlug(fp string, slug string) bool {
 	fpKey := fingerprintKey(fp)
@@ -90,7 +93,9 @@ func (rdb *RedisDB) DestCreate(dest *Dest) (string, bool) {
 	destUUID := GetRandString(24)
 	destKey := destKey(destUUID)
 	err := rdb.Client.HMSet(destKey, *dest.ToMap()).Err()
-	// add to userdests list
+	// add to userdests sorted set
+	owner := dest.Owner
+	rdb.Client.ZAdd(userdestsKey(owner), redis.Z{Score: float64(time.Now().Unix()), Member: destUUID})
 	return destUUID, err == nil
 }
 
@@ -103,6 +108,7 @@ func (rdb *RedisDB) SlugCreate(slug, destUUID string, expire int, fp string) boo
 	rdb.Client.HDel(fpKey, "reserve").Err()
 	rdb.Client.Del(rKey)
 	// add to destslugs list
+	rdb.Client.LPush(destslugsKey(destUUID), slug)
 	return true
 }
 
@@ -148,4 +154,53 @@ func (rdb *RedisDB) SessionLookup(token string) (bool, string, bool) {
 	} else {
 		return true, username, rdb.Client.Exists(userKey(username)).Val() > 0
 	}
+}
+
+type DestListing struct {
+	UUID            string
+	Dest            string
+	Description     string
+	EnableAnalytics bool
+	CreatedAt       string
+	Slugs           []SlugListing
+}
+
+type SlugListing struct {
+	Slug    string
+	Expires string
+}
+
+func (rdb *RedisDB) BuildDestIndex(username string) []*DestListing {
+	var destIndex []*DestListing
+	userDestsZ := rdb.Client.ZRevRangeWithScores(userdestsKey(username), 0, -1).Val()
+	for _, Z := range userDestsZ {
+		createdAt := time.Unix(int64(Z.Score), 0).Format(time.RFC3339)
+		ud := Z.Member.(string)
+		destMap := rdb.Client.HGetAll(destKey(ud)).Val()
+		destSlugs := rdb.Client.LRange(destslugsKey(ud), 0, -1).Val()
+		var slugIndex []SlugListing
+		for _, ds := range destSlugs {
+			ttl := rdb.Client.TTL(slugKey(ds)).Val()
+			var expires string
+			if ttl > 0 {
+				expires = time.Now().Add(ttl).Format(time.RFC3339)
+			} else {
+				expires = ""
+			}
+			slugIndex = append(slugIndex, SlugListing{
+				Slug:    ds,
+				Expires: expires,
+			})
+		}
+		dl := DestListing{
+			UUID:            ud,
+			Dest:            destMap["Dest"],
+			Description:     destMap["Description"],
+			EnableAnalytics: destMap["EnableAnalytics"] == "1",
+			CreatedAt:       createdAt,
+			Slugs:           slugIndex,
+		}
+		destIndex = append(destIndex, &dl)
+	}
+	return destIndex
 }

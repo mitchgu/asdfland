@@ -8,7 +8,7 @@ type Dest struct {
 	Dest            string
 	Description     string
 	Password        string
-	Username        string
+	Owner           string
 	EnableAnalytics bool
 }
 
@@ -43,7 +43,7 @@ func (dest *Dest) ToMap() *map[string]interface{} {
 		"Dest":            dest.Dest,
 		"Description":     dest.Description,
 		"Password":        dest.Password,
-		"Username":        dest.Username,
+		"Owner":           dest.Owner,
 		"EnableAnalytics": dest.EnableAnalytics,
 	}
 	return &destMap
