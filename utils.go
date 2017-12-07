@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	crand "crypto/rand"
 	"encoding/base64"
 	"encoding/json"
@@ -9,7 +10,7 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
-	"os"
+	"regexp"
 	"strings"
 )
 
@@ -24,53 +25,37 @@ func GetRandString(l int) string {
 	return str[:l]
 }
 
-// readLines reads a whole file into memory
-// and returns a slice of its lines.
-func readLines(path string) ([]string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines, scanner.Err()
-}
-
 func initWordlists() map[string][]string {
+	fname_regex := regexp.MustCompile(`^wordlists\/(.*)\.txt$`)
 	wls := make(map[string][]string)
-	for name, file := range c.GetStringMapString("wordlists") {
-		if wordlist, err := readLines(file); err != nil {
-			log.Printf("Word list %s at %s could not be read", name, file)
-		} else {
-			wls[name] = wordlist
+	for _, wl_name := range AssetNames() {
+		fname_match := fname_regex.FindStringSubmatch(wl_name)
+		if fname_match == nil {
+			continue
 		}
+		wl_bytes := MustAsset(wl_name)
+		scanner := bufio.NewScanner(bytes.NewReader(wl_bytes))
+		var lines []string
+		for scanner.Scan() {
+			lines = append(lines, scanner.Text())
+		}
+		wls[fname_match[1]] = lines
+		log.Printf("Wordlist loaded: %s", wl_name)
 	}
 	return wls
 }
 
 var wordlists = initWordlists()
 
-func GetWordlistWord(wl string) (string, error) {
-	if wordlist, ok := wordlists[wl]; ok {
-		return wordlist[rand.Intn(len(wordlist))], nil
-	} else {
-		return "", fmt.Errorf("GetWordlistWord: word list %s not found", wl)
-	}
-}
-
-func GetReadableString(wl string, len int) (string, error) {
+func GetReadableString(wl_name string, count int) (string, error) {
 	var words []string
-	for i := 0; i < len; i++ {
-		if word, err := GetWordlistWord(wl); err != nil {
-			return "", err
-		} else {
-			words = append(words, word)
-		}
+	wl, exists := wordlists[wl_name]
+	if !exists {
+		return "", fmt.Errorf("GetReadableString: word list %s not found", wl)
+	}
+	wl_size := len(wl)
+	for i := 0; i < count; i++ {
+		words = append(words, wl[rand.Intn(wl_size)])
 	}
 	return strings.Join(words, c.GetString("word_delimiter")), nil
 }

@@ -1,8 +1,17 @@
-server_addr: localhost:9090
+# The server port
+port: 9090
 
+# Right now only "redis" is supported
 db_kind: redis
+
+# Redis configuration
 redis_addr: localhost:6379
 redis_dbnum: 7
 redis_pass: 
 
-frontend_dir: /srv/asdf/asdfland_vue_client/dist
+# The password hashing cost. higher -> slower, more secure
+bcrypt_cost: 8
+
+# The delimiter for readable links with multiple words
+# e.g. your.site/cat.dog.fox for a "." delimiter
+word_delimiter: "."

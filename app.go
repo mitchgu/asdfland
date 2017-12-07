@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/gorilla/mux"
 )
 
@@ -19,11 +20,16 @@ func (a *App) InitRedis(redisAddr, redisPass string, redisDbnum int) {
 	a.DB = &rdb
 }
 
-func (a *App) InitRouter(frontendDir string) {
+func (a *App) InitRouter() {
 	a.Router = mux.NewRouter().StrictSlash(true)
 
 	// Setup the static Vue.js frontend routes
-	frontendServer := Logger(http.FileServer(http.Dir(frontendDir)), "frontend")
+	frontendServer := Logger(http.FileServer(
+		&assetfs.AssetFS{
+			Asset:     Asset,
+			AssetDir:  AssetDir,
+			AssetInfo: AssetInfo,
+			Prefix:    "frontend"}), "frontend")
 	a.Router.Path("/").Handler(frontendServer)
 	a.Router.PathPrefix("/static").Handler(frontendServer)
 
@@ -44,10 +50,10 @@ func (a *App) InitRouter(frontendDir string) {
 	}
 }
 
-func (a *App) Run(addr string) {
+func (a *App) Run(port string) {
 	srv := &http.Server{
 		Handler: a.Router,
-		Addr:    addr,
+		Addr:    "localhost:" + port,
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,

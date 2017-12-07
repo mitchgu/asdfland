@@ -6,8 +6,11 @@ import (
 	"time"
 )
 
+var version = "master"
+
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
+	log.Printf("Starting asdfland version %s", version)
 
 	a := App{}
 	if c.GetString("db_kind") == "redis" {
@@ -18,6 +21,8 @@ func main() {
 	} else {
 		log.Fatalf("Database type not supported: %s", c.GetString("db_kind"))
 	}
-	a.InitRouter(c.GetString("frontend_dir"))
-	a.Run(c.GetString("server_addr"))
+	a.InitRouter()
+
+	log.Printf("Serving at localhost:" + c.GetString("port"))
+	a.Run(c.GetString("port"))
 }
