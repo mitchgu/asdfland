@@ -5,4 +5,4 @@ redis_addr: localhost:6379
 redis_dbnum: 7
 redis_pass: 
 
-frontend_dir: /Users/mitchgu/Code/asdfland_client/dist
+frontend_dir: /srv/asdf/asdfland_vue_client/dist
