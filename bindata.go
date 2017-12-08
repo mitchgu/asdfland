@@ -392,19 +392,19 @@ func AssetNames() []string {
 
 // _bindata is a table, holding each asset generator, mapped to its name.
 var _bindata = map[string]func() (*asset, error){
-	"wordlists/.DS_Store": wordlistsDs_store,
-	"wordlists/eff_large.txt": wordlistsEff_largeTxt,
-	"wordlists/eff_short_1.txt": wordlistsEff_short_1Txt,
-	"wordlists/eff_short_2.txt": wordlistsEff_short_2Txt,
-	"wordlists/pgp.txt": wordlistsPgpTxt,
-	"frontend/index.html": frontendIndexHtml,
-	"frontend/static/css/app.cd655c20f0d6c2fa4d1f84ac5ba2fda6.css": frontendStaticCssAppCd655c20f0d6c2fa4d1f84ac5ba2fda6Css,
+	"wordlists/.DS_Store":                                             wordlistsDs_store,
+	"wordlists/eff_large.txt":                                         wordlistsEff_largeTxt,
+	"wordlists/eff_short_1.txt":                                       wordlistsEff_short_1Txt,
+	"wordlists/eff_short_2.txt":                                       wordlistsEff_short_2Txt,
+	"wordlists/pgp.txt":                                               wordlistsPgpTxt,
+	"frontend/index.html":                                             frontendIndexHtml,
+	"frontend/static/css/app.cd655c20f0d6c2fa4d1f84ac5ba2fda6.css":    frontendStaticCssAppCd655c20f0d6c2fa4d1f84ac5ba2fda6Css,
 	"frontend/static/css/app.cd655c20f0d6c2fa4d1f84ac5ba2fda6.css.gz": frontendStaticCssAppCd655c20f0d6c2fa4d1f84ac5ba2fda6CssGz,
-	"frontend/static/js/app.ad5450107ebc6eed10d8.js": frontendStaticJsAppAd5450107ebc6eed10d8Js,
-	"frontend/static/js/app.ad5450107ebc6eed10d8.js.gz": frontendStaticJsAppAd5450107ebc6eed10d8JsGz,
-	"frontend/static/js/manifest.4c2cd85230d44801f20c.js": frontendStaticJsManifest4c2cd85230d44801f20cJs,
-	"frontend/static/js/vendor.43e005e6bde5f13cf7e8.js": frontendStaticJsVendor43e005e6bde5f13cf7e8Js,
-	"frontend/static/js/vendor.43e005e6bde5f13cf7e8.js.gz": frontendStaticJsVendor43e005e6bde5f13cf7e8JsGz,
+	"frontend/static/js/app.ad5450107ebc6eed10d8.js":                  frontendStaticJsAppAd5450107ebc6eed10d8Js,
+	"frontend/static/js/app.ad5450107ebc6eed10d8.js.gz":               frontendStaticJsAppAd5450107ebc6eed10d8JsGz,
+	"frontend/static/js/manifest.4c2cd85230d44801f20c.js":             frontendStaticJsManifest4c2cd85230d44801f20cJs,
+	"frontend/static/js/vendor.43e005e6bde5f13cf7e8.js":               frontendStaticJsVendor43e005e6bde5f13cf7e8Js,
+	"frontend/static/js/vendor.43e005e6bde5f13cf7e8.js.gz":            frontendStaticJsVendor43e005e6bde5f13cf7e8JsGz,
 }
 
 // AssetDir returns the file names below a certain
@@ -446,29 +446,30 @@ type bintree struct {
 	Func     func() (*asset, error)
 	Children map[string]*bintree
 }
+
 var _bintree = &bintree{nil, map[string]*bintree{
 	"frontend": &bintree{nil, map[string]*bintree{
 		"index.html": &bintree{frontendIndexHtml, map[string]*bintree{}},
 		"static": &bintree{nil, map[string]*bintree{
 			"css": &bintree{nil, map[string]*bintree{
-				"app.cd655c20f0d6c2fa4d1f84ac5ba2fda6.css": &bintree{frontendStaticCssAppCd655c20f0d6c2fa4d1f84ac5ba2fda6Css, map[string]*bintree{}},
+				"app.cd655c20f0d6c2fa4d1f84ac5ba2fda6.css":    &bintree{frontendStaticCssAppCd655c20f0d6c2fa4d1f84ac5ba2fda6Css, map[string]*bintree{}},
 				"app.cd655c20f0d6c2fa4d1f84ac5ba2fda6.css.gz": &bintree{frontendStaticCssAppCd655c20f0d6c2fa4d1f84ac5ba2fda6CssGz, map[string]*bintree{}},
 			}},
 			"js": &bintree{nil, map[string]*bintree{
-				"app.ad5450107ebc6eed10d8.js": &bintree{frontendStaticJsAppAd5450107ebc6eed10d8Js, map[string]*bintree{}},
-				"app.ad5450107ebc6eed10d8.js.gz": &bintree{frontendStaticJsAppAd5450107ebc6eed10d8JsGz, map[string]*bintree{}},
-				"manifest.4c2cd85230d44801f20c.js": &bintree{frontendStaticJsManifest4c2cd85230d44801f20cJs, map[string]*bintree{}},
-				"vendor.43e005e6bde5f13cf7e8.js": &bintree{frontendStaticJsVendor43e005e6bde5f13cf7e8Js, map[string]*bintree{}},
+				"app.ad5450107ebc6eed10d8.js":       &bintree{frontendStaticJsAppAd5450107ebc6eed10d8Js, map[string]*bintree{}},
+				"app.ad5450107ebc6eed10d8.js.gz":    &bintree{frontendStaticJsAppAd5450107ebc6eed10d8JsGz, map[string]*bintree{}},
+				"manifest.4c2cd85230d44801f20c.js":  &bintree{frontendStaticJsManifest4c2cd85230d44801f20cJs, map[string]*bintree{}},
+				"vendor.43e005e6bde5f13cf7e8.js":    &bintree{frontendStaticJsVendor43e005e6bde5f13cf7e8Js, map[string]*bintree{}},
 				"vendor.43e005e6bde5f13cf7e8.js.gz": &bintree{frontendStaticJsVendor43e005e6bde5f13cf7e8JsGz, map[string]*bintree{}},
 			}},
 		}},
 	}},
 	"wordlists": &bintree{nil, map[string]*bintree{
-		".DS_Store": &bintree{wordlistsDs_store, map[string]*bintree{}},
-		"eff_large.txt": &bintree{wordlistsEff_largeTxt, map[string]*bintree{}},
+		".DS_Store":       &bintree{wordlistsDs_store, map[string]*bintree{}},
+		"eff_large.txt":   &bintree{wordlistsEff_largeTxt, map[string]*bintree{}},
 		"eff_short_1.txt": &bintree{wordlistsEff_short_1Txt, map[string]*bintree{}},
 		"eff_short_2.txt": &bintree{wordlistsEff_short_2Txt, map[string]*bintree{}},
-		"pgp.txt": &bintree{wordlistsPgpTxt, map[string]*bintree{}},
+		"pgp.txt":         &bintree{wordlistsPgpTxt, map[string]*bintree{}},
 	}},
 }}
 
@@ -518,4 +519,3 @@ func _filePath(dir, name string) string {
 	cannonicalName := strings.Replace(name, "\\", "/", -1)
 	return filepath.Join(append([]string{dir}, strings.Split(cannonicalName, "/")...)...)
 }
-

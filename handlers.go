@@ -17,10 +17,10 @@ import (
 func (a *App) CheckinHandler(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	respondWithJSON(w, http.StatusOK, map[string]string{
-		"site_name": 	a.Config.GetString("site_name"),
-		"site_tagline": a.Config.GetString("site_tagline"),
-		"version": 		version,
-		"username":     ctx.Value("Username").(string),
+		"site_name":     a.Config.GetString("site_name"),
+		"site_tagline":  a.Config.GetString("site_tagline"),
+		"version":       version,
+		"username":      ctx.Value("Username").(string),
 		"is_registered": strconv.FormatBool(ctx.Value("IsRegistered").(bool)),
 	})
 }
@@ -97,7 +97,7 @@ func (a *App) SlugDestCreateHandler(w http.ResponseWriter, r *http.Request) {
 	dest.Dest = destUrl.String()
 	fingerprint := r.Context().Value("Username").(string)
 	if !a.DB.SlugReserved(fingerprint, sdcr.Slug) {
-		respondBadRequest(w, "Slug hasn't been reserved yet: " + sdcr.Slug)
+		respondBadRequest(w, "Slug hasn't been reserved yet: "+sdcr.Slug)
 		return
 	}
 	dest.Owner = r.Context().Value("Username").(string)
