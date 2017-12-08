@@ -1,9 +1,8 @@
 package main
 
 import (
-	"time"
-	// "log"
 	"fmt"
+	"time"
 
 	"github.com/go-redis/redis"
 )

@@ -37,7 +37,7 @@ func (a *App) SlugReserveHandler(w http.ResponseWriter, r *http.Request) {
 			respondBadRequest(w, "Readable slug length must be 1 to 6 words")
 			return
 		}
-		slugGenerator = func() (string, error) { return GetReadableString(srr.Wordlist, srr.Length) }
+		slugGenerator = func() (string, error) { return a.GetReadableString(srr.Wordlist, srr.Length) }
 		attempts = 5
 	case "custom":
 		if len(srr.CustomSlug) < 1 {
@@ -133,7 +133,7 @@ func (a *App) UserCreateHandler(w http.ResponseWriter, r *http.Request) {
 		respondBadRequest(w, "Password must be at least 6 characters")
 		return
 	}
-	bytes, err := bcrypt.GenerateFromPassword([]byte(ucr.Password), c.GetInt("bcrypt_cost"))
+	bytes, err := bcrypt.GenerateFromPassword([]byte(ucr.Password), a.Config.GetInt("bcrypt_cost"))
 	digest := string(bytes)
 	err = a.DB.UserCreate(ucr.Username, digest)
 	if err != nil {
