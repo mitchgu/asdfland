@@ -54,12 +54,13 @@ func (a *App) InitConfig() {
 		log.Println("Config file loaded")
 	}
 
+	a.Config.SetDefault("site_name", "asdf.land")
+	a.Config.SetDefault("site_tagline", "The only URL shortener you'll ever need.")
 	a.Config.SetDefault("port", "9090")
 	a.Config.SetDefault("db_kind", "redis")
 	a.Config.SetDefault("redis_addr", "localhost:6379")
 	a.Config.SetDefault("redis_db", 0)
 	a.Config.SetDefault("redis_pass", "")
-
 	a.Config.SetDefault("bcrypt_cost", 8)
 	a.Config.SetDefault("word_delimiter", ".")
 }

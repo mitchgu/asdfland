@@ -15,6 +15,13 @@ type Routes []Route
 func (a *App) GetRoutes() *Routes {
 	var routes = Routes{
 		Route{
+			"CheckinHandler",
+			"GET",
+			"/api/checkin",
+			true,
+			a.CheckinHandler,
+		},
+		Route{
 			"SlugReserve",
 			"POST",
 			"/api/slug/reserve",
@@ -55,13 +62,6 @@ func (a *App) GetRoutes() *Routes {
 			"/api/user/logout",
 			false,
 			a.UserLogoutHandler,
-		},
-		Route{
-			"SessionGet",
-			"GET",
-			"/api/session",
-			true,
-			a.SessionGetHandler,
 		},
 		Route{
 			"LinkPreviewGet",
