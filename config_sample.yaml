@@ -1,3 +1,7 @@
+# Site settings
+site_name: asdf.land
+site_tagline: The only URL shortener you'll ever need.
+
 # The server port
 port: 9090
 

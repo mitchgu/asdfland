@@ -28,16 +28,15 @@
 First, **make sure you either have Redis installed locally or running on a remote server**. The [Redis Quick Start Guide](https://redis.io/topics/quickstart) has great instructions for installing Redis.
 
 1. Download and extract the [latest prebuilt release](https://github.com/mitchgu/asdfland/releases/latest) (`asdfland_<version>_<os>_<arch>.tar.gz`) (`.zip` for Windows)
+2. Copy `config_sample.yaml` to `config.yaml` and edit its settings appropriately. (see next section)
 3. Run `asdfland` (`asdfland.exe` for Windows). The default server address is `localhost:9090`.
 
 ## Configuration
-By default, `asdfland` will look for Redis running locally on the default port (`localhost:6379`) and use database `7`. To configure these settings and many others, create a file called `config.yaml` in one of three places:
+By default, `asdfland` will look for Redis running locally on the default port (`localhost:6379`) and use database `7`. To configure these settings and many others, asdfland will load configuration from a file called `config.yaml` in one of three places:
 
 * The working directory where `asdfland` will be run
 * `$HOME/.config/asdfland/config.yaml`
 * `/etc/asdfland/config.yaml`
-
-The `config_sample.yaml` file in the root of this repository has all available settings and is recommended to use as a template. 
 
 ## Building from source
 This (obviously) requires Go to be installed. [Here](https://golang.org/doc/install) are instructions for that
